@@ -1,11 +1,9 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import DayPlan from "./DayPlan";
-import { Droppable } from "react-beautiful-dnd";
-import { useSelector, useDispatch } from "react-redux";
-import { scheduleActions } from "../store/scheduleSlice";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
-// import * as Y from "yjs";
-// import { WebrtcProvider } from "y-webrtc";
+import * as Y from "yjs";
+import { WebrtcProvider } from "y-webrtc";
 
 // const ydoc = new Y.Doc();
 
@@ -31,8 +29,7 @@ import { scheduleActions } from "../store/scheduleSlice";
 // });
 
 const Plan = () => {
-  const list = useSelector((state) => state.schedule);
-  const dispatch = useDispatch();
+  // const [list, setList] = useState([]);
 
   // ydoc.on("afterTransaction", () => {
   //   setList(Array.from(ymap.get("list")));
@@ -42,30 +39,46 @@ const Plan = () => {
   //   ymap.set("list", list);
   // }, [JSON.stringify(list)]);
 
-  const update = () => {};
+  // const update = () => {
+  //   setList(list);
+  // };
 
-  const add = () => {
-    dispatch(scheduleActions.tmpAddDay());
-  };
+  // const add = () => {
+  //   setList([...list, new Array()]);
+  // };
+
+  // const onDragEnd = ({ source, destination }) => {
+  //   if (!destination) return;
+
+  //   const scourceKey = Number(source.droppableId.replace("list", ""));
+  //   const destinationKey = Number(destination.droppableId.replace("list", ""));
+
+  //   const tmplist = Array.from(list);
+  //   const [value] = tmplist.at(scourceKey).splice(source.index, 1);
+  //   tmplist.at(destinationKey).splice(destination.index, 0, value);
+  //   setList(tmplist);
+  // };
 
   return (
     <div style={{ display: "flex" }}>
-      {list.map((data, index) => (
-        <div style={{ flexDirection: "column" }} key={index}>
-          <Droppable droppableId={`list${index}`}>
-            {(provided) => (
-              <div ref={provided.innerRef} {...provided.droppableProps}>
-                <DayPlan
-                  data={{ index: index + 1, list: list.at(index) }}
-                  update={update}
-                  key={index}
-                />
-              </div>
-            )}
-          </Droppable>
-        </div>
-      ))}
-      <button onClick={add}>날짜추가</button>
+      {/* <DragDropContext onDragEnd={onDragEnd} style={{ display: "flex" }}>
+        {list.map((data, index) => (
+          <div style={{ flexDirection: "column" }} key={index}>
+            <Droppable droppableId={`list${index}`}>
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  <DayPlan
+                    data={{ index: index + 1, list: list.at(index) }}
+                    update={update}
+                    key={index}
+                  />
+                </div>
+              )}
+            </Droppable>
+          </div>
+        ))}
+      </DragDropContext>
+      <button onClick={add}>날짜추가</button> */}
     </div>
   );
 };
