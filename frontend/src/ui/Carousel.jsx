@@ -2,7 +2,8 @@ import { Fragment, useState } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
-const Carousel22 = () => {
+// 테스트용 주석입니다.
+const CarouselTemplete = () => {
   const [transformValue, setTransformValue] = useState(0);
   const [itemWidth, setItemWidth] = useState(0);
   const responsive = {
@@ -72,4 +73,4 @@ const Carousel22 = () => {
   );
 };
 
-export default Carousel22;
+export default CarouselTemplete;

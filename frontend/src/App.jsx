@@ -46,12 +46,24 @@ const router = createBrowserRouter([
         path: "practice",
         element: <PracticePage />,
       },
+      {
+        path: "login/oauth2/code/kakao",
+        element: <HomePage />,
+      },
+      {
+        path: "login/oauth2/code/naver",
+        element: <HomePage />,
+      },
     ],
   },
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <div className="font-spoqa">
+      <RouterProvider router={router} />;
+    </div>
+  );
 }
 
 export default App;
