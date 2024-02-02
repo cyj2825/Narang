@@ -14,7 +14,8 @@ import PracticePage from "./pages/PracticeInfinite";
 import ChatRoomPage from "./pages/ChatRoom";
 import Login from "./pages/Login";
 import Mypage from "./pages/Mypage";
-import SubscribePage from "./pages/SubScribeTestPage";
+import YonghwanPage from "./test/YonghwanPage";
+import YejinPage from "./test/YejinPage";
 
 const router = createBrowserRouter([
   {
@@ -47,10 +48,7 @@ const router = createBrowserRouter([
         path: "/search",
         element: <SearchPage />,
       },
-      {
-        path: "/SubscribeTest",
-        element: <SubscribePage />,
-      }
+    
     ],
   },
 
@@ -80,6 +78,14 @@ const router = createBrowserRouter([
         path: "login/oauth2/code/naver",
         element: <Login />,
       },
+      {
+        path: "/yonghwan",
+        element: <YonghwanPage />
+      },
+      {
+        path: "/Yejin",
+        element: <YejinPage />
+      }
     ],
   },
 ]);
