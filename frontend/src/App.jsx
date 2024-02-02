@@ -11,7 +11,6 @@ import TripRegisterPage from "./pages/TripResgister";
 import TripDetailPage from "./pages/TripDetail";
 import ChatPage from "./pages/Chat";
 import PracticePage from "./pages/PracticeInfinite";
-import ChatRoomPage from "./pages/ChatRoom";
 import Login from "./pages/Login";
 import Mypage from "./pages/Mypage";
 import YonghwanPage from "./test/YonghwanPage";
@@ -21,7 +20,7 @@ const router = createBrowserRouter([
   {
     path: "",
     element: <RootLayoutOffWidgets />,
-    errorElement: <ErrorPage />,
+    // errorElement: <ErrorPage />,
     children: [
       {
         path: "/applicantList",
@@ -63,10 +62,6 @@ const router = createBrowserRouter([
         element: <ChatPage />,
       },
       {
-        path: "chatRoomTest/chat/:chatRoomId",
-        element: <ChatRoomPage />,
-      },
-      {
         path: "practice",
         element: <PracticePage />,
       },
@@ -83,7 +78,7 @@ const router = createBrowserRouter([
         element: <YonghwanPage />
       },
       {
-        path: "/Yejin",
+        path: "/yejin",
         element: <YejinPage />
       }
     ],

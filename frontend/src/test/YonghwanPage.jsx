@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 
 const dummyData = {
-  tripid: "tripId452",
+  tripId: "tripId12",
   tripName: "강원도로 같이 가실분",
   senderId: "조용환",
   receiverId: "조예진",
@@ -12,12 +12,23 @@ const dummyData = {
   isRead: false,
 };
 const dummyData2 = {
-  tripid: "tripId2322",
+  tripId: "tripId322",
   tripName: "제주제주 같이 가실분",
   senderId: "조용환",
   receiverId: "조예진",
   position: ["강남 멋쟁이"],
   aspiration: "전복 다나와!",
+  alterType: "REQUEST",
+  isRead: false,
+};
+
+const dummyData3 = {
+  tripId: "tripId1131",
+  tripName: "트립트립",
+  senderId: "조용환",
+  receiverId: "조예진",
+  position: ["강남 멋쟁이"],
+  aspiration: "홈 고 홈",
   alterType: "REQUEST",
   isRead: false,
 };
@@ -39,12 +50,20 @@ const YonghwanPage = () => {
     const eventSource = new EventSource(
       `https://i10a701.p.ssafy.io/api/message/alert/subscribe/${dummyData.senderId}`
     );
-
+    
+    eventSource.onopen = () => {
+      console.log('SSE 연결이 성공적으로 열렸습니다');
+    };
+    
     // SSE 메시지를 수신할 때 호출되는 이벤트 핸들러를 정의합니다.
-    eventSource.onmessage = (event) => {
-      // 받은 메시지를 상태에 추가합니다.
-      console.log(alertMessage);
-      setAlertMessage((prevMessages) => [...prevMessages, event.data]);
+    eventSource.onmessage = async (event) => {
+      const data = await event.data;
+      console.log(data);
+      setAlertMessage((prevMessages) => [...prevMessages, data]);
+    };
+    eventSource.onclose = () => {
+      console.log("sse 연결 닫아유");
+      // 여기에 연결이 닫힐 때 수행하고자 하는 작업 추가
     };
 
     // 컴포넌트가 언마운트되면 SSE 연결을 닫습니다.
@@ -52,59 +71,60 @@ const YonghwanPage = () => {
       eventSource.close();
     };
   }, []);
-
   const alertHandler = () => {
     axios
-      .post("https://i10a701.p.ssafy.io/api/message/alert/attend", dummyData2)
+      .post("https://i10a701.p.ssafy.io/api/message/alert/attend", dummyData3)
       .then((response) => {
         // 요청이 성공한 경우 처리
+        console.log("요청 성공")
         console.log("Response data:", response.data);
         // 원하는 추가적인 작업 수행
       })
       .catch((error) => {
         // 요청이 실패한 경우 처리
+        console.log("요청 실패")
         console.error("Error:", error);
         // 원하는 에러 처리 수행
       });
   };
-
-  const alertAllowHandler = () => {
-    axios
-      .post("https://i10a701.p.ssafy.io/api/message/alert/attend", {
-        ...dummyData2,
-        alterType: "ACCEPT",
-      })
-      .then((response) => {
-        // 요청이 성공한 경우 처리
-        console.log("Response data:", response.data);
-        // 원하는 추가적인 작업 수행
-      })
-      .catch((error) => {
-        // 요청이 실패한 경우 처리
-        console.error("Error:", error);
-        // 원하는 에러 처리 수행
-      });
-  };
-  const alertRejectHandler = () => {
-    axios
-      .post("https://i10a701.p.ssafy.io/api/message/alert/attend", {
-        ...dummyData2,
-        alterType: "ACCEPT",
-      })
-      .then((response) => {
-        // 요청이 성공한 경우 처리
-        console.log("Response data:", response.data);
-        // 원하는 추가적인 작업 수행
-      })
-      .catch((error) => {
-        // 요청이 실패한 경우 처리
-        console.error("Error:", error);
-        // 원하는 에러 처리 수행
-      });
-  };
+  // const alertAllowHandler = () => {
+  //   axios
+  //     .post("https://i10a701.p.ssafy.io/api/message/alert/attend", {
+  //       ...dummyData2,
+  //       alterType: "ACCEPT",
+  //     })
+  //     .then((response) => {
+  //       // 요청이 성공한 경우 처리
+  //       console.log("Response data:", response.data);
+  //       // 원하는 추가적인 작업 수행
+  //     })
+  //     .catch((error) => {
+  //       // 요청이 실패한 경우 처리
+  //       console.error("Error:", error);
+  //       // 원하는 에러 처리 수행
+  //     });
+  // };
+  // const alertRejectHandler = () => {
+  //   axios
+  //     .post("https://i10a701.p.ssafy.io/api/message/alert/attend", {
+  //       ...dummyData2,
+  //       alterType: "ACCEPT",
+  //     })
+  //     .then((response) => {
+  //       // 요청이 성공한 경우 처리
+  //       console.log("Response data:", response.data);
+  //       // 원하는 추가적인 작업 수행
+  //     })
+  //     .catch((error) => {
+  //       // 요청이 실패한 경우 처리
+  //       console.error("Error:", error);
+  //       // 원하는 에러 처리 수행
+  //     });
+  // };
 
   return (
     <Fragment>
+      용환 페이지
       <div className="flex space-x-4 mt-8">
         <div> 예진이에게 알림보내기</div>
         <button

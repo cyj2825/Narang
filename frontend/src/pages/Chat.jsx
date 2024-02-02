@@ -1,63 +1,80 @@
-import { useNavigate } from "react-router-dom";
-import Button from "../ui/Button";
+import { Stomp } from "@stomp/stompjs";
+import { useState } from "react";
+import SockJS from "sockjs-client";
 
-const userId = "조예진"
+const Chat = () => {
+  const sockJS = new SockJS("https://i10a701.p.ssafy.io/api/message/chat");
+  const stomp = Stomp.over(sockJS);
+  // 이 구간은 현재 생략 가능할 듯?
+  const [inputMsg, setInputMsg] = useState("");
+  const [msgList, setMsgList] = useState([
+    { nickname: "관리자", message: "--님이 입장하셨습니다." },
+  ]);
 
-const ChatPage = () => {
-  const navigate = useNavigate();
-  const submitHandler = (e) => {
-    e.preventDefault();
-    const chatRoomId = e.target.elements.chatRoomId.value;
-    const nickname = e.target.elements.nickname.value;
+  stomp.connect(
+    "yoonjae",
+    "dbswoWkd",
+    function (frame) {
+      console.log("Connected to Stomp");
 
-    const dynamicPath = `chat/chatRoomId=${chatRoomId}?nickname=${nickname}`;
+      // Subscribe to the chat room
+      stomp.subscribe("/exchange/chat.exchange/room.room1", function (message) {
+        // const chatDto = JSON.parse(message.body);
+        /* 이부분은 알아서 받아야 하는 데이터 값으로 변경해야 함
+        setMsgList((prev) => [
+          ...prev,
+          { [chatDto.nickname]: chatDto.message },
+        ]);
+*/
+      });
+    },
+    function (error) {
+      console.error("Stomp connection error", error);
+    }
+  );
 
-    navigate(dynamicPath);
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    stomp.send(
+      "/pub/chat.message.room1",
+      {},
+      JSON.stringify({
+        // 이부분도 알아서 데이터 변경해야 함
+        message: inputMsg,
+        memberId: 1,
+        nickname: "YourNickname",
+      })
+    );
+    setInputMsg("");
   };
 
-  const eventSource = new EventSource(`https://i10a701.p.ssafy.io/api/message/alert/subscribe/${userId}`);
-    
-    eventSource.onmessage = function (event) {
-        const eventData = JSON.parse(event.data);
-        // 서버에서 전송한 데이터를 처리
-        console.log('Received data:', eventData.message);
-    };
-
-    eventSource.onerror = function (error) {
-        console.error('Error with SSE connection:', error);
-        eventSource.close();  // 에러 발생 시 연결 종료
-    };
+  const inputMsgHandler = (event) => {
+    setInputMsg(event.target.value);
+  };
 
   return (
-    <div className="">
-      <div className="">
-        <label>
-          <b>채팅방</b>
-        </label>
+    <div>
+      <div id="chatArea">
+        {msgList.map((msg) => (
+          <li key={msg.message}>{`${msg.nickname} : ${msg.message}`}</li>
+        ))}
       </div>
 
-      <form onSubmit={submitHandler}>
-        <label htmlFor="chatRoomId">룸아이디</label>
-        <br />
+      <form id="chatForm" onSubmit={submitHandler}>
+        <label>Message:</label>
         <input
-          type="number"
-          id="chatRoomId"
-          name="chatRoomId"
-          className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        />
-        <hr />
-        <label htmlFor="chatRoomId">닉네임</label>
-        <br />
-        <input
+          onChange={inputMsgHandler}
           type="text"
-          name="nickname"
-          className="shadow appearance-none border rounded w-1/2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="message"
+          value={inputMsg}
+          required
+          placeholder="message써줘잉"
         />
-        <hr />
-        <Button type="submit">참여하기</Button>
+        <button type="submit">Send</button>
       </form>
     </div>
   );
 };
 
-export default ChatPage;
+export default Chat;
